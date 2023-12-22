@@ -1,5 +1,6 @@
+
 class createHashMap:
-    def __init__(self, initial_capacity=10):
+    def __init__(self, initial_capacity=60):
         self.table = []
         for i in range(initial_capacity):
             self.table.append([])
@@ -25,13 +26,13 @@ class createHashMap:
     def search(self, key):
        bucket = hash(key) % len(self.table)
        bucket_list = self.table[bucket]
-       print(bucket_list)
+       
 
-       if key in bucket_list:
-           item_index = bucket_list.index(key)
-           return bucket_list[item_index]
-       else:
-           return None
+       for stored_key, stored_item in bucket_list:
+            if stored_key == key:
+                return stored_item
+            else:
+                return None
     
     def remove(self, key):
         bucket = hash(key) % len(self.table)
