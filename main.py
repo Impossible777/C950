@@ -37,7 +37,7 @@ def getAddresses(address1, address2):
         for row in distanceReader:
             if row:
                 normalized_address = normalize_address(row[0])
-                if address1 == normalized_address:
+                if normalized_address(address1) == normalized_address:
                     addressOneIndex = row.index(address1)
                     break
         header = next(distanceReader, None)
@@ -45,7 +45,7 @@ def getAddresses(address1, address2):
         if header:
             for col_index, value in enumerate(header):
                 normalized_address = normalize_address(value)
-                if address2 == normalized_address:
+                if normalized_address(address2) == normalized_address:
                     addressTwoIndex = col_index
                     break
         
@@ -65,8 +65,8 @@ def getCellValue(distanceTablePath, row_index, col_index):
         else: return None
 
 
-addressOne = "International Peace Gardens 1060 Dalton Ave S"
-addressTwo = "Sugar House Park 1330 2100 S"
+addressOne = "International Peace Gardens \n 1060 Dalton Ave S"
+addressTwo = "Sugar House Park \n 1330 2100 S"
 addressOneIndex, addressTwoIndex = getAddresses(addressOne, addressTwo)
 print(getCellValue(distanceTablePath, addressOneIndex, addressTwoIndex))
             
