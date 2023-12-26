@@ -5,9 +5,29 @@ import csv
 # Path to the packageInfo.csv file
 packageInfoPath = 'packageInfo.csv'
 distanceTablePath = 'WGUPS Distance Table (1).csv'
+distanceCSV = 'distanceCSV.csv'
+addressCSV = 'addressCSV.csv'
 
 # Creating the hash table
 packageInfo = createHashMap()
+
+
+
+distanceData = []
+addressData = []
+packageList1 = [1, 13, 14, 15, 16, 19, 20, 29, 30, 31, 34, 37, 40]
+Truck2PackageList = ['2', '3', '4', '5', '18', '36', '38', '6', '25', '28', '32', '33', '35', '36', '38', '39']
+
+with open(addressCSV, 'r', encoding='utf-8-sig') as addressCSVFile:
+    addressReader = csv.reader(addressCSVFile)
+    for row in addressReader:
+        addressData.append(row[2])
+
+
+with open(distanceCSV, 'r', encoding='utf-8-sig') as distanceCSVFile:
+    distanceReader = csv.reader(distanceCSVFile)
+    for row in distanceReader:
+        distanceData.append(row[0:])
 
 
 #Accessing the packageInfo.csv file and inserting the data into the hash table
@@ -19,56 +39,50 @@ with open(packageInfoPath, 'r', encoding='utf-8-sig') as csv_file:
 
         packageInfo.insert(key, value)
 
+def distanceBetweenLocations(address1, address2):
+    distance = distanceData[addressData.index(address1)][addressData.index(address2)]
+    if distance == '':
+        return 0.0
+    print(address1, address2, distance)
+    return float(distance)
+
+
+def minDistanceFrom(truck):
+    minDistance = 100000.00
+    for package in truck.packages:
+        package_info = packageInfo.search(package)
+        if package_info is not None:
+            distance = distanceBetweenLocations(packageInfo.search(package)[0], truck.currentLocation)
+            if distance < minDistance:
+                minDistance = distance
+    return minDistance        
+    
 
 # Creating the truck objects
-truck1 = truck(16, 18)
-truck2 = truck(16, 18)
-truck3 = truck(16, 18)
+truck1 = truck(16, 18, packageList1)
+truck2 = truck(16, 18, Truck2PackageList)
+truck3 = truck(16, 18, packageList1)
 
-def normalize_address(address):
-    return ' '.join(address.split())
+addressOne = '4001 South 700 East'
+addressTwo = '1060 Dalton Ave S'
 
-def getAddresses(address1, address2):
+
+print(minDistanceFrom(truck2))
+
+
+
+
+
+
+
+
     
+
     
-    # This function takes two addresses and returns the distance between them in miles
-    with open(distanceTablePath, 'r', encoding='utf-8-sig') as distanceCSV:
-        distanceReader = csv.reader(distanceCSV)
-        for row in distanceReader:
-            if row:
-                normalized_address = normalize_address(row[0])
-                if normalized_address(address1) == normalized_address:
-                    addressOneIndex = row.index(address1)
-                    break
-        header = next(distanceReader, None)
-
-        if header:
-            for col_index, value in enumerate(header):
-                normalized_address = normalize_address(value)
-                if normalized_address(address2) == normalized_address:
-                    addressTwoIndex = col_index
-                    break
-        
-        return addressOneIndex, addressTwoIndex
-    
-def getCellValue(distanceTablePath, row_index, col_index):
-    with open(distanceTablePath, 'r', encoding='utf-8-sig') as distanceCSV:
-        distanceReader = csv.reader(distanceCSV)
-        
-        for _ in range(row_index + 1):
-            row = next(distanceReader, None)
-            if row is None:
-                return None
-            
-        if row is not None and col_index < len(row):
-            return row[col_index]
-        else: return None
 
 
-addressOne = "International Peace Gardens \n 1060 Dalton Ave S"
-addressTwo = "Sugar House Park \n 1330 2100 S"
-addressOneIndex, addressTwoIndex = getAddresses(addressOne, addressTwo)
-print(getCellValue(distanceTablePath, addressOneIndex, addressTwoIndex))
+
+
             
 
     

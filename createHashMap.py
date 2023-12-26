@@ -31,8 +31,8 @@ class createHashMap:
        for stored_key, stored_item in bucket_list:
             if stored_key == key:
                 return stored_item
-            else:
-                return None
+    
+            return None
     
     def remove(self, key):
         bucket = hash(key) % len(self.table)
