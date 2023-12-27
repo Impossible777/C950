@@ -1,5 +1,5 @@
 class truck:
-    def __init__(self, maxPackages, avgSpeed, packages, currentLocation = '1330 2100 S'):
+    def __init__(self, maxPackages, avgSpeed, packages, currentLocation = '6351 South 900 East'):
         self.maxPackages = maxPackages
         self.avgSpeed = avgSpeed
         self.packages = packages

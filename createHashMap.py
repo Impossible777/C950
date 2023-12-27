@@ -32,7 +32,7 @@ class createHashMap:
             if stored_key == key:
                 return stored_item
     
-            return None
+       return None
     
     def remove(self, key):
         bucket = hash(key) % len(self.table)
@@ -40,3 +40,14 @@ class createHashMap:
 
         if key in bucket_list:
             bucket_list.remove(key)
+    
+    def update_array_index(self, key, index, new_value):
+        bucket = hash(key) % len(self.table)
+        bucket_list = self.table[bucket]
+
+        for kv in bucket_list:
+            if kv[0] == key:
+                kv[1][index] = new_value
+                return True
+        
+        return False
