@@ -17,10 +17,12 @@ milesDriven = 0.0
 
 
 
+
 distanceData = []
 addressData = []
-packageList1 = [1, 13, 14, 15, 16, 19, 20, 29, 30, 31, 34, 37, 40]
-Truck2PackageList = ['2', '3', '4', '5', '18', '6', '25', '28', '32', '33', '35', '36', '38', '22']
+packageList1 = ['1', '13', '14', '15', '16', '19', '20', '29', '30', '31', '34', '37', '40', '39']
+Truck2PackageList = ['2', '3', '4', '5', '7', '8', '18', '10', '11', '12', '33', '35', '36', '38', '22']
+Truck3PackageList = ['6', '17', '21', '23', '24', '25', '26', '27', '28', '32']
 
 # Accessing the addressCSV.csv file and inserting the data into the addressData list
 with open(addressCSV, 'r', encoding='utf-8-sig') as addressCSVFile:
@@ -70,38 +72,59 @@ def minDistanceFrom(truck):
     return deliverPackage, minDistance
 
 
+
+def timeToDeliver(distance):
+    timeInMinutes = distance / 0.3
+    return timeInMinutes
+
+
 def deliverPackages(truck):
-    milesDriven = 0.0
     numberOfPackages = len(truck.packages)
-    count = 0
+    for package in truck.packages:
+        packageInfo.update_array_index(package, 6, 'En Route')
     
     while numberOfPackages > 0:
         deliverPackage, minDistance = minDistanceFrom(truck)
-        print(deliverPackage)
         truck.removePackages(deliverPackage)
-        milesDriven += minDistance
+        truck.drive(minDistance)
         truck.currentLocation = packageInfo.search(deliverPackage)[0]
-        print(truck.currentLocation)
+        time = timeToDeliver(minDistance)
+        truck.changeTime(time)
         packageInfo.update_array_index(deliverPackage, 6, 'Delivered')
         numberOfPackages -= 1
-        count +=1
-        print(count)
-        print(milesDriven)
+        packageInfo.update_array_index(deliverPackage, 7, truck.startTime.strftime("%H:%M"))
         
-    
-        
-        
-        
+    truck.currentLocation = '6351 South 900 East'
 
-          
+
+
     
 
+
+
+      
+    
+BeginngTime = datetime.datetime(2023, 12, 27, 8, 0, 0)
+Truck3StartTime = datetime.datetime(2023, 12, 27, 9, 50, 0)
 # Creating the truck objects
-truck1 = truck(16, 18, packageList1)
-truck2 = truck(16, 18, Truck2PackageList)
-truck3 = truck(16, 18, packageList1)
+truck1 = truck(16, 18, packageList1, BeginngTime)
+truck2 = truck(16, 18, Truck2PackageList, BeginngTime)
+truck3 = truck(16, 18, Truck3PackageList, Truck3StartTime)
 
-deliverPackages(truck2)
+# Delivering the packages
+(deliverPackages(truck1))
+(deliverPackages(truck2))
+(deliverPackages(truck3))
+
+if truck3.packages == []:
+    truck3.addPackage('9')
+    truck3.changeExactTime(datetime.datetime(2023, 12, 27, 11, 15, 0))
+deliverPackages(truck3)
+
+
+
+
+
 
 
 
