@@ -70,12 +70,12 @@ def distanceBetweenLocations(address1, address2):
 def minDistanceFrom(truck):
     minDistance = 100000.00
     for package in truck.packages:
-        distance = distanceBetweenLocations(packageInfo.search(package)[0], truck.currentLocation)
+        distance = distanceBetweenLocations(packageInfo.look_up(package)[0], truck.currentLocation)
         if distance is not None and distance < minDistance:
             minDistance = distance
             deliverPackage = package
         else:
-            distance = distanceBetweenLocations(truck.currentLocation, packageInfo.search(package)[0])
+            distance = distanceBetweenLocations(truck.currentLocation, packageInfo.look_up(package)[0])
             if distance is not None and distance < minDistance:
                 minDistance = distance
                 deliverPackage = package
@@ -103,7 +103,7 @@ def deliverPackages(truck):
         deliverPackage, minDistance = minDistanceFrom(truck)
         truck.removePackages(deliverPackage)
         truck.drive(minDistance)
-        truck.currentLocation = packageInfo.search(deliverPackage)[0]
+        truck.currentLocation = packageInfo.look_up(deliverPackage)[0]
         time = timeToDeliver(minDistance)
         truck.changeTime(time)
         packageInfo.update_array_index(deliverPackage, 6, 'Delivered')
@@ -182,21 +182,21 @@ class Main:
         if input3 == 'solo':
             print('Please enter the package number.')
             input4 = input()
-            formattedPackageTime = datetime.datetime.strptime(packageInfo.search(input4)[7], '%H:%M')
-            formattedDepartureTime = datetime.datetime.strptime(packageInfo.search(input4)[8], '%H:%M')
+            formattedPackageTime = datetime.datetime.strptime(packageInfo.look_up(input4)[7], '%H:%M')
+            formattedDepartureTime = datetime.datetime.strptime(packageInfo.look_up(input4)[8], '%H:%M')
             if formattedPackageTime < formattedInputTime:
-                print('PackageID: ' + input4 + "," + ' Address: ' + packageInfo.search(input4)[0] + "," + ' City: ' + packageInfo.search(input4)[1] + "," + ' State: ' + packageInfo.search(input4)[2] + "," + ' Zip: ' + packageInfo.search(input4)[3] + "," + ' Deadline: ' + packageInfo.search(input4)[4] + "," + ' Weight: ' + packageInfo.search(input4)[5] + "," + ' Status: ' + packageInfo.search(input4)[6] + "," + ' Delivery Time: ' + packageInfo.search(input4)[7] + "," + " Delivered by: " + packageInfo.search(input4)[9])
+                print('PackageID: ' + input4 + "," + ' Address: ' + packageInfo.look_up(input4)[0] + "," + ' City: ' + packageInfo.look_up(input4)[1] + "," + ' State: ' + packageInfo.look_up(input4)[2] + "," + ' Zip: ' + packageInfo.look_up(input4)[3] + "," + ' Deadline: ' + packageInfo.look_up(input4)[4] + "," + ' Weight: ' + packageInfo.look_up(input4)[5] + "," + ' Status: ' + packageInfo.look_up(input4)[6] + "," + ' Delivery Time: ' + packageInfo.look_up(input4)[7] + "," + " Delivered by: " + packageInfo.look_up(input4)[9])
             elif formattedDepartureTime > formattedInputTime:
                 packageInfo.update_array_index(input4, 6, 'At Hub')
-                print('PackageID: ' + input4 + "," + ' Address: ' + packageInfo.search(input4)[0] + "," + ' City: ' + packageInfo.search(input4)[1] + "," + ' State: ' + packageInfo.search(input4)[2] + "," + ' Zip: ' + packageInfo.search(input4)[3] + "," + ' Deadline: ' + packageInfo.search(input4)[4] + "," + ' Weight: ' + packageInfo.search(input4)[5] + "," + ' Status: ' + packageInfo.search(input4)[6] + " @ " + formattedInputTime.strftime("%H:%M"))
+                print('PackageID: ' + input4 + "," + ' Address: ' + packageInfo.look_up(input4)[0] + "," + ' City: ' + packageInfo.look_up(input4)[1] + "," + ' State: ' + packageInfo.look_up(input4)[2] + "," + ' Zip: ' + packageInfo.look_up(input4)[3] + "," + ' Deadline: ' + packageInfo.look_up(input4)[4] + "," + ' Weight: ' + packageInfo.look_up(input4)[5] + "," + ' Status: ' + packageInfo.look_up(input4)[6] + " @ " + formattedInputTime.strftime("%H:%M"))
             elif formattedDepartureTime < formattedInputTime:
                 packageInfo.update_array_index(input4, 6, 'En Route')
-                print('PackageID: ' + input4 + "," + ' Address: ' + packageInfo.search(input4)[0] + "," + ' City: ' + packageInfo.search(input4)[1] + "," + ' State: ' + packageInfo.search(input4)[2] + "," + ' Zip: ' + packageInfo.search(input4)[3] + "," + ' Deadline: ' + packageInfo.search(input4)[4] + "," + ' Weight: ' + packageInfo.search(input4)[5] + "," + ' Status: ' + packageInfo.search(input4)[6] + " @ " + formattedInputTime.strftime("%H:%M") + " on " + packageInfo.search(input4)[9] )
+                print('PackageID: ' + input4 + "," + ' Address: ' + packageInfo.look_up(input4)[0] + "," + ' City: ' + packageInfo.look_up(input4)[1] + "," + ' State: ' + packageInfo.look_up(input4)[2] + "," + ' Zip: ' + packageInfo.look_up(input4)[3] + "," + ' Deadline: ' + packageInfo.look_up(input4)[4] + "," + ' Weight: ' + packageInfo.look_up(input4)[5] + "," + ' Status: ' + packageInfo.look_up(input4)[6] + " @ " + formattedInputTime.strftime("%H:%M") + " on " + packageInfo.look_up(input4)[9] )
         
         # If the user enters all, the program will display all packages and there statuses at the time entered
         elif input3 == 'all':
             for i in range(1, 41):
-                package = packageInfo.search(str(i))
+                package = packageInfo.look_up(str(i))
                 formattedPackageTime = datetime.datetime.strptime(package[7], '%H:%M')
                 formattedDepartureTime = datetime.datetime.strptime(package[8], '%H:%M')
                 if formattedPackageTime < formattedInputTime:
