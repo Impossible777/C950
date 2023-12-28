@@ -9,8 +9,12 @@ import datetime
 
 # Path to the packageInfo.csv file
 packageInfoPath = 'packageInfo.csv'
-distanceTablePath = 'WGUPS Distance Table (1).csv'
+
+
+#Path to distance CSV
 distanceCSV = 'distanceCSV.csv'
+
+#Path to address CSV
 addressCSV = 'addressCSV.csv'
 
 # Creating the hash table
@@ -29,28 +33,47 @@ distanceData = []
 addressData = []
 
 #initializing lists for truck package lists
+#Packages on truck 1
 packageList1 = ['1', '13', '14', '15', '16', '19', '20', '29', '30', '31', '34', '37', '40', '39']
+
+#Packages on truck 2
 Truck2PackageList = ['2', '3', '4', '5', '7', '8', '18', '10', '11', '12', '33', '35', '36', '38', '22']
+
+#Packages on truck 3
 Truck3PackageList = ['6', '17', '21', '23', '24', '26', '27', '28', '32']
 
 # Accessing the addressCSV.csv file and inserting the data into the addressData list
 with open(addressCSV, 'r', encoding='utf-8-sig') as addressCSVFile:
     addressReader = csv.reader(addressCSVFile)
+    
+    #Iterates through each row in the addressCSV file
     for row in addressReader:
+        
+        #Appends each row to the addressData list
         addressData.append(row[2])
 
 # Accessing the distanceCSV.csv file and inserting the data into the distanceData list
 with open(distanceCSV, 'r', encoding='utf-8-sig') as distanceCSVFile:
     distanceReader = csv.reader(distanceCSVFile)
+    
+    #Iterates through each row in the distanceCSV file
     for row in distanceReader:
+        
+        #Appends each row to the distanceData list
         distanceData.append(row)
 
 
-#Accessing the packageInfo.csv file and inserting the data into the hash table
+#Accessing the packageInfo.csv file and inserting the data into the hash table packageInfo
 with open(packageInfoPath, 'r', encoding='utf-8-sig') as csv_file:
     csv_reader = csv.reader(csv_file)
+    
+    #Iterates through each row in the packageInfo.csv file
     for row in csv_reader:
+        
+        #Uses the first element in each row as the key
         key = row[0]
+        
+        #Uses the remaining elements in each row as the value, and returns the value as a list
         value = row[1:]
 
         packageInfo.insert(key, value)
@@ -79,7 +102,8 @@ def minDistanceFrom(truck):
     #Check each package on the truck
     for package in truck.packages:
         
-        #Use the distanceBetweenLocations function to find the distance between the truck's current location and the package's delivery location
+        #Use the distanceBetweenLocations function to find the distance between the truck's current location 
+        #and the package's delivery location
         distance = distanceBetweenLocations(packageInfo.look_up(package)[0], truck.currentLocation)
         
         #If the distance is less than minDistance, minDistance is assigned the value of distance
@@ -104,7 +128,7 @@ def timeToDeliver(distance):
 
 
 #Calculates the nearest package delivery location and delivers the package. This process is repeated until all 
-#packages have been delivered on the truck entered as an object.
+#packages have been delivered on the truck entered as an argument.
 def deliverPackages(truck):
     #Determines the number of packages on the truck
     numberOfPackages = len(truck.packages)
@@ -156,13 +180,7 @@ def totalMilesDriven():
     totalMiles = truck1.milesDriven + truck2.milesDriven + truck3.milesDriven
     return totalMiles
 
-
-
     
-
-
-
-      
 #Creating the start time variable for truck1 and truck2 objects    
 BeginngTime = datetime.datetime(2023, 12, 27, 8, 0, 0)
 
@@ -182,14 +200,27 @@ truck3 = truck(3, 16, 18, Truck3PackageList, Truck3StartTime)
 
 
 #When truck1 has delivered it's initial packages, it returns to the hub and picks up the packages that were not ready at 8:00am
+
+#ensuring that the truck has delivered all packages
 if truck1.packages == []:
+    
+    #adding package 25 to the truck
     truck1.addPackage('25')
+    
+    #updating the time of day to ensure the truck has a driver at the hub available.
     truck1.changeExactTime(datetime.datetime(2023, 12, 27, 10, 0, 0))
 deliverPackages(truck1)
 
-#When truck3 has delivered it's initial packages, it returns to the hub and picks up the packages that were not ready at 8:00am
+#When truck3 has delivered it's initial packages, it returns to the hub and picks up package 9, which wasn't ready until 10:20am
+#due to an incorrect address
+
+#ensuring that the truck has delivered all packages
 if truck3.packages == []:
+    
+    #adding package 9 to the truck
     truck3.addPackage('9')
+    
+    #updating the time of day to ensure the truck has a driver at the hub available. 
     truck3.changeExactTime(datetime.datetime(2023, 12, 27, 11, 15, 0))
 deliverPackages(truck3)
 
@@ -200,12 +231,24 @@ deliverPackages(truck3)
 class Main:
     # Verifies that the user has entered the time in the correct format
     def verifyTimeFormatting():
+        #Continues to ask the user for the time until the time is entered in the correct format
         while True:
             try:
+                
+                #Asks the user for the time
                 print('Please enter the time in the following format: HH:MM')
+                
+                #Saves the user input to a variable
                 input2 = input()
+                
+                #Formats the user input
                 formattedInputTime = datetime.datetime.strptime(input2, '%H:%M')
+                
+                #If the correct time is entered, the while loop is broken
                 break
+            
+            #If an incorrect reponse is entered, the user is asked to enter the time in the correct format
+            #and the while loop continues
             except ValueError:
                 print('Please enter the time in the correct format.')
         return formattedInputTime
@@ -244,17 +287,29 @@ class Main:
             
             #If the package time is less than the input time, the package has been delivered and the program will display the package information
             if formattedPackageTime < formattedInputTime:
-                print('PackageID: ' + input4 + "," + ' Address: ' + packageInfo.look_up(input4)[0] + "," + ' City: ' + packageInfo.look_up(input4)[1] + "," + ' State: ' + packageInfo.look_up(input4)[2] + "," + ' Zip: ' + packageInfo.look_up(input4)[3] + "," + ' Deadline: ' + packageInfo.look_up(input4)[4] + "," + ' Weight: ' + packageInfo.look_up(input4)[5] + "," + ' Status: ' + packageInfo.look_up(input4)[6] + "," + ' Delivery Time: ' + packageInfo.look_up(input4)[7] + "," + " Delivered by: " + packageInfo.look_up(input4)[9])
+                print('PackageID: ' + input4 + "," + ' Address: ' + packageInfo.look_up(input4)[0] + "," + ' City: ' + 
+                      packageInfo.look_up(input4)[1] + "," + ' State: ' + packageInfo.look_up(input4)[2] + "," + ' Zip: ' + 
+                      packageInfo.look_up(input4)[3] + "," + ' Deadline: ' + packageInfo.look_up(input4)[4] + "," + ' Weight: ' + 
+                      packageInfo.look_up(input4)[5] + "," + ' Status: ' + packageInfo.look_up(input4)[6] + "," + ' Delivery Time: ' + 
+                      packageInfo.look_up(input4)[7] + "," + " Delivered by: " + packageInfo.look_up(input4)[9])
             
             #If the departure time is greater than the input time, the package is at the hub and the program will display the package information
             elif formattedDepartureTime > formattedInputTime:
                 packageInfo.update_array_index(input4, 6, 'At Hub')
-                print('PackageID: ' + input4 + "," + ' Address: ' + packageInfo.look_up(input4)[0] + "," + ' City: ' + packageInfo.look_up(input4)[1] + "," + ' State: ' + packageInfo.look_up(input4)[2] + "," + ' Zip: ' + packageInfo.look_up(input4)[3] + "," + ' Deadline: ' + packageInfo.look_up(input4)[4] + "," + ' Weight: ' + packageInfo.look_up(input4)[5] + "," + ' Status: ' + packageInfo.look_up(input4)[6] + " @ " + formattedInputTime.strftime("%H:%M"))
+                print('PackageID: ' + input4 + "," + ' Address: ' + packageInfo.look_up(input4)[0] + "," + ' City: ' + 
+                      packageInfo.look_up(input4)[1] + "," + ' State: ' + packageInfo.look_up(input4)[2] + "," + ' Zip: ' + 
+                      packageInfo.look_up(input4)[3] + "," + ' Deadline: ' + packageInfo.look_up(input4)[4] + "," + ' Weight: ' + 
+                      packageInfo.look_up(input4)[5] + "," + ' Status: ' + packageInfo.look_up(input4)[6] + " @ " + 
+                      formattedInputTime.strftime("%H:%M"))
             
             #If the departure time is less than the input time, the package is en route and the program will display the package information
             elif formattedDepartureTime < formattedInputTime:
                 packageInfo.update_array_index(input4, 6, 'En Route')
-                print('PackageID: ' + input4 + "," + ' Address: ' + packageInfo.look_up(input4)[0] + "," + ' City: ' + packageInfo.look_up(input4)[1] + "," + ' State: ' + packageInfo.look_up(input4)[2] + "," + ' Zip: ' + packageInfo.look_up(input4)[3] + "," + ' Deadline: ' + packageInfo.look_up(input4)[4] + "," + ' Weight: ' + packageInfo.look_up(input4)[5] + "," + ' Status: ' + packageInfo.look_up(input4)[6] + " @ " + formattedInputTime.strftime("%H:%M") + " on " + packageInfo.look_up(input4)[9] )
+                print('PackageID: ' + input4 + "," + ' Address: ' + packageInfo.look_up(input4)[0] + "," + ' City: ' + 
+                      packageInfo.look_up(input4)[1] + "," + ' State: ' + packageInfo.look_up(input4)[2] + "," + ' Zip: ' + 
+                      packageInfo.look_up(input4)[3] + "," + ' Deadline: ' + packageInfo.look_up(input4)[4] + "," + ' Weight: ' + 
+                      packageInfo.look_up(input4)[5] + "," + ' Status: ' + packageInfo.look_up(input4)[6] + " @ " + 
+                      formattedInputTime.strftime("%H:%M") + " on " + packageInfo.look_up(input4)[9] )
         
         # If the user enters all, the program will display all packages that are at the hub, en route, or delivered at the input time
         elif input3 == 'all':
@@ -273,24 +328,35 @@ class Main:
                 
                 #If the package time is less than the input time, the package has been delivered and the program will display the package information
                 if formattedPackageTime < formattedInputTime:
-                    print('PackageID: ' + str(i) + "," + ' Address: ' + package[0] + "," + ' City: ' + package[1] + "," + ' State: ' + package[2] + "," + ' Zip: ' + package[3] + "," + ' Deadline: ' + package[4] + "," + ' Weight: ' + package[5] + "," + ' Status: ' + package[6] + "," + ' Delivery Time: ' + package[7]+ "," + " Delivered by: " + package[9])
+                    print('PackageID: ' + str(i) + "," + ' Address: ' + package[0] + "," + ' City: ' + package[1] + "," + ' State: ' + 
+                          package[2] + "," + ' Zip: ' + package[3] + "," + ' Deadline: ' + package[4] + "," + ' Weight: ' + 
+                          package[5] + "," + ' Status: ' + package[6] + "," + ' Delivery Time: ' + package[7]+ "," + " Delivered by: " + 
+                          package[9])
                 
                 #If the departure time is greater than the input time, the package is at the hub and the program will display the package information
                 elif formattedDepartureTime > formattedInputTime:
                     packageInfo.update_array_index(str(i), 6, 'At Hub')
-                    print('PackageID: ' + str(i) + "," + ' Address: ' + package[0] + "," + ' City: ' + package[1] + "," + ' State: ' + package[2] + "," + ' Zip: ' + package[3] + "," + ' Deadline: ' + package[4] + "," + ' Weight: ' + package[5] + "," + ' Status: ' + package[6]+ " @ " + formattedInputTime.strftime("%H:%M"))
+                    print('PackageID: ' + str(i) + "," + ' Address: ' + package[0] + "," + ' City: ' + package[1] + "," + ' State: ' + 
+                          package[2] + "," + ' Zip: ' + package[3] + "," + ' Deadline: ' + package[4] + "," + ' Weight: ' + 
+                          package[5] + "," + ' Status: ' + package[6]+ " @ " + formattedInputTime.strftime("%H:%M"))
                 
                 #If the departure time is less than the input time, the package is en route and the program will display the package information
                 elif formattedDepartureTime < formattedInputTime:
                     packageInfo.update_array_index(str(i), 6, 'En Route')
-                    print('PackageID: ' + str(i) + "," + ' Address: ' + package[0] + "," + ' City: ' + package[1] + "," + ' State: ' + package[2] + "," + ' Zip: ' + package[3] + "," + ' Deadline: ' + package[4] + "," + ' Weight: ' + package[5]  + "," + ' Status: ' + package[6]+ " @ " + formattedInputTime.strftime("%H:%M") + " on " + package[9])
+                    print('PackageID: ' + str(i) + "," + ' Address: ' + package[0] + "," + ' City: ' + package[1] + "," + ' State: ' + 
+                          package[2] + "," + ' Zip: ' + package[3] + "," + ' Deadline: ' + package[4] + "," + ' Weight: ' + 
+                          package[5]  + "," + ' Status: ' + package[6]+ " @ " + formattedInputTime.strftime("%H:%M") + " on " + 
+                          package[9])
     
     #If the user enters 1, the program will display the total miles driven by all trucks and all package information
     elif input1 == '1':
         print('The total milage for this route is ' + str(totalMilesDriven()) + ' miles.')
         for i in range(1, 41):
             package = packageInfo.look_up(str(i))
-            print('PackageID: ' + str(i) + "," + ' Address: ' + package[0] + "," + ' City: ' + package[1] + "," + ' State: ' + package[2] + "," + ' Zip: ' + package[3] + "," + ' Deadline: ' + package[4] + "," + ' Weight: ' + package[5] + "," + ' Status: ' + package[6] + "," + ' Delivery Time: ' + package[7]+ "," + " Delivered by: " + package[9])
+            print('PackageID: ' + str(i) + "," + ' Address: ' + package[0] + "," + ' City: ' + package[1] + "," + ' State: ' + 
+                  package[2] + "," + ' Zip: ' + package[3] + "," + ' Deadline: ' + package[4] + "," + ' Weight: ' + 
+                  package[5] + "," + ' Status: ' + package[6] + "," + ' Delivery Time: ' + package[7]+ "," + " Delivered by: " + 
+                  package[9])
     
     #If the user enters 3, the program will end
     else:

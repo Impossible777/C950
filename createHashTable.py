@@ -41,6 +41,7 @@ class createHashTable:
         if key in bucket_list:
             bucket_list.remove(key)
     
+    #Allows the user to update a value in the array
     def update_array_index(self, key, index, new_value):
         bucket = hash(key) % len(self.table)
         bucket_list = self.table[bucket]
