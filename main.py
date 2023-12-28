@@ -31,7 +31,7 @@ addressData = []
 #initializing lists for truck package lists
 packageList1 = ['1', '13', '14', '15', '16', '19', '20', '29', '30', '31', '34', '37', '40', '39']
 Truck2PackageList = ['2', '3', '4', '5', '7', '8', '18', '10', '11', '12', '33', '35', '36', '38', '22']
-Truck3PackageList = ['6', '17', '21', '23', '24', '25', '26', '27', '28', '32']
+Truck3PackageList = ['6', '17', '21', '23', '24', '26', '27', '28', '32']
 
 # Accessing the addressCSV.csv file and inserting the data into the addressData list
 with open(addressCSV, 'r', encoding='utf-8-sig') as addressCSVFile:
@@ -97,6 +97,7 @@ def deliverPackages(truck):
     for package in truck.packages:
         packageInfo.update_array_index(package, 6, 'En Route')
         packageInfo.update_array_index(package, 8, truck.startTime.strftime("%H:%M"))
+        packageInfo.update_array_index(package, 9, 'Truck ' + str(truck.number))
     
     while numberOfPackages > 0:
         deliverPackage, minDistance = minDistanceFrom(truck)
@@ -109,7 +110,7 @@ def deliverPackages(truck):
         numberOfPackages -= 1
         packageInfo.update_array_index(deliverPackage, 7, truck.startTime.strftime("%H:%M"))
         
-    truck.currentLocation = '6351 South 900 East'
+    truck.currentLocation = '4001 South 700 East'
 
 # Returns the total miles driven by all trucks
 def totalMilesDriven():
@@ -130,20 +131,29 @@ BeginngTime = datetime.datetime(2023, 12, 27, 8, 0, 0)
 Truck3StartTime = datetime.datetime(2023, 12, 27, 9, 50, 0)
 
 # Creating the truck objects
-truck1 = truck(16, 18, packageList1, BeginngTime)
-truck2 = truck(16, 18, Truck2PackageList, BeginngTime)
-truck3 = truck(16, 18, Truck3PackageList, Truck3StartTime)
+truck1 = truck(1, 16, 18, packageList1, BeginngTime)
+truck2 = truck(2, 16, 18, Truck2PackageList, BeginngTime)
+truck3 = truck(3, 16, 18, Truck3PackageList, Truck3StartTime)
 
 # Delivering the packages
 (deliverPackages(truck1))
 (deliverPackages(truck2))
 (deliverPackages(truck3))
 
+
+if truck1.packages == []:
+    truck1.addPackage('25')
+    truck1.changeExactTime(datetime.datetime(2023, 12, 27, 10, 0, 0))
+deliverPackages(truck1)
+
 if truck3.packages == []:
     truck3.addPackage('9')
     truck3.changeExactTime(datetime.datetime(2023, 12, 27, 11, 15, 0))
 deliverPackages(truck3)
-print(packageInfo.search('9')[7])
+
+
+
+
 
 class Main:
     # Verifies that the user has entered the time in the correct format
@@ -175,13 +185,13 @@ class Main:
             formattedPackageTime = datetime.datetime.strptime(packageInfo.search(input4)[7], '%H:%M')
             formattedDepartureTime = datetime.datetime.strptime(packageInfo.search(input4)[8], '%H:%M')
             if formattedPackageTime < formattedInputTime:
-                print('PackageID: ' + input4 + ' Address: ' + packageInfo.search(input4)[0] + ' City: ' + packageInfo.search(input4)[1] + ' State: ' + packageInfo.search(input4)[2] + ' Zip: ' + packageInfo.search(input4)[3] + ' Deadline: ' + packageInfo.search(input4)[4] + ' Weight: ' + packageInfo.search(input4)[5] + ' Status: ' + packageInfo.search(input4)[6] + ' Delivery Time: ' + packageInfo.search(input4)[7])
+                print('PackageID: ' + input4 + "," + ' Address: ' + packageInfo.search(input4)[0] + "," + ' City: ' + packageInfo.search(input4)[1] + "," + ' State: ' + packageInfo.search(input4)[2] + "," + ' Zip: ' + packageInfo.search(input4)[3] + "," + ' Deadline: ' + packageInfo.search(input4)[4] + "," + ' Weight: ' + packageInfo.search(input4)[5] + "," + ' Status: ' + packageInfo.search(input4)[6] + "," + ' Delivery Time: ' + packageInfo.search(input4)[7] + "," + " Delivered by: " + packageInfo.search(input4)[9])
             elif formattedDepartureTime > formattedInputTime:
                 packageInfo.update_array_index(input4, 6, 'At Hub')
-                print('PackageID: ' + input4 + ' Address: ' + packageInfo.search(input4)[0] + ' City: ' + packageInfo.search(input4)[1] + ' State: ' + packageInfo.search(input4)[2] + ' Zip: ' + packageInfo.search(input4)[3] + ' Deadline: ' + packageInfo.search(input4)[4] + ' Weight: ' + packageInfo.search(input4)[5] + ' Status: ' + packageInfo.search(input4)[6])
+                print('PackageID: ' + input4 + "," + ' Address: ' + packageInfo.search(input4)[0] + "," + ' City: ' + packageInfo.search(input4)[1] + "," + ' State: ' + packageInfo.search(input4)[2] + "," + ' Zip: ' + packageInfo.search(input4)[3] + "," + ' Deadline: ' + packageInfo.search(input4)[4] + "," + ' Weight: ' + packageInfo.search(input4)[5] + "," + ' Status: ' + packageInfo.search(input4)[6] + " @ " + formattedInputTime.strftime("%H:%M"))
             elif formattedDepartureTime < formattedInputTime:
                 packageInfo.update_array_index(input4, 6, 'En Route')
-                print('PackageID: ' + input4 + ' Address: ' + packageInfo.search(input4)[0] + ' City: ' + packageInfo.search(input4)[1] + ' State: ' + packageInfo.search(input4)[2] + ' Zip: ' + packageInfo.search(input4)[3] + ' Deadline: ' + packageInfo.search(input4)[4] + ' Weight: ' + packageInfo.search(input4)[5] + ' Status: ' + packageInfo.search(input4)[6])
+                print('PackageID: ' + input4 + "," + ' Address: ' + packageInfo.search(input4)[0] + "," + ' City: ' + packageInfo.search(input4)[1] + "," + ' State: ' + packageInfo.search(input4)[2] + "," + ' Zip: ' + packageInfo.search(input4)[3] + "," + ' Deadline: ' + packageInfo.search(input4)[4] + "," + ' Weight: ' + packageInfo.search(input4)[5] + "," + ' Status: ' + packageInfo.search(input4)[6] + " @ " + formattedInputTime.strftime("%H:%M") + " on " + packageInfo.search(input4)[9] )
         
         # If the user enters all, the program will display all packages and there statuses at the time entered
         elif input3 == 'all':
@@ -190,13 +200,13 @@ class Main:
                 formattedPackageTime = datetime.datetime.strptime(package[7], '%H:%M')
                 formattedDepartureTime = datetime.datetime.strptime(package[8], '%H:%M')
                 if formattedPackageTime < formattedInputTime:
-                    print('PackageID: ' + str(i) + ' Address: ' + package[0] + ' City: ' + package[1] + ' State: ' + package[2] + ' Zip: ' + package[3] + ' Deadline: ' + package[4] + ' Weight: ' + package[5] + ' Status: ' + package[6] + ' Delivery Time: ' + package[7])
+                    print('PackageID: ' + str(i) + "," + ' Address: ' + package[0] + "," + ' City: ' + package[1] + "," + ' State: ' + package[2] + "," + ' Zip: ' + package[3] + "," + ' Deadline: ' + package[4] + "," + ' Weight: ' + package[5] + "," + ' Status: ' + package[6] + "," + ' Delivery Time: ' + package[7]+ "," + " Delivered by: " + package[9])
                 elif formattedDepartureTime > formattedInputTime:
                     packageInfo.update_array_index(str(i), 6, 'At Hub')
-                    print('PackageID: ' + str(i) + ' Address: ' + package[0] + ' City: ' + package[1] + ' State: ' + package[2] + ' Zip: ' + package[3] + ' Deadline: ' + package[4] + ' Weight: ' + package[5] + ' Status: ' + package[6])
+                    print('PackageID: ' + str(i) + "," + ' Address: ' + package[0] + "," + ' City: ' + package[1] + "," + ' State: ' + package[2] + "," + ' Zip: ' + package[3] + "," + ' Deadline: ' + package[4] + "," + ' Weight: ' + package[5] + "," + ' Status: ' + package[6]+ " @ " + formattedInputTime.strftime("%H:%M"))
                 elif formattedDepartureTime < formattedInputTime:
                     packageInfo.update_array_index(str(i), 6, 'En Route')
-                    print('PackageID: ' + str(i) + ' Address: ' + package[0] + ' City: ' + package[1] + ' State: ' + package[2] + ' Zip: ' + package[3] + ' Deadline: ' + package[4] + ' Weight: ' + package[5] + ' Status: ' + package[6])
+                    print('PackageID: ' + str(i) + "," + ' Address: ' + package[0] + "," + ' City: ' + package[1] + "," + ' State: ' + package[2] + "," + ' Zip: ' + package[3] + "," + ' Deadline: ' + package[4] + "," + ' Weight: ' + package[5]  + "," + ' Status: ' + package[6]+ " @ " + formattedInputTime.strftime("%H:%M") + " on " + package[9])
     else:
         'Thank you for using the WGUPS Package Delivery System. If you would like to make another inquiry, please restart the program and enter "time."'
                 

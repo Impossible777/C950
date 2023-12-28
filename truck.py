@@ -1,13 +1,14 @@
 import datetime
 
 class truck:
-    def __init__(self, maxPackages, avgSpeed, packages, startTime, currentLocation = '6351 South 900 East', milesDriven = 0.0):
+    def __init__(self, number, maxPackages, avgSpeed, packages, startTime, currentLocation = '4001 South 700 East', milesDriven = 0.0):
         self.maxPackages = maxPackages
         self.avgSpeed = avgSpeed
         self.packages = packages
         self.currentLocation = currentLocation
         self.milesDriven = milesDriven
         self.startTime = startTime
+        self.number = number
     
     def __str__(self):
         return f"This truck is currently at {self.currentLocation} and has {self.packages} on board."
