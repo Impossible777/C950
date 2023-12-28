@@ -4,6 +4,9 @@ import csv
 import datetime
 
 
+#Name: Michael Crist
+#WGU StudentID: 000397493
+
 # Path to the packageInfo.csv file
 packageInfoPath = 'packageInfo.csv'
 distanceTablePath = 'WGUPS Distance Table (1).csv'
