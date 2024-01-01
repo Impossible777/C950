@@ -267,6 +267,12 @@ class Main:
         #The user will be asked to enter a time, and the time will be formatted appropriately by the verifyTimeFormatting function
         formattedInputTime = verifyTimeFormatting()
         
+        #Ensuring the appropriate address is used package 9 depending on the time entered
+        correctedAddressTime = datetime.datetime.strptime('10:20', '%H:%M')
+        if formattedInputTime < correctedAddressTime:
+            packageInfo.update_array_index('9', 0, '300 State St')
+            packageInfo.update_array_index('9', 3, '84103')
+        
         #Once the time has been formatted, the user will be asked if they would like to inquire about a single package or all packages
         print('Please enter solo if you would like to inquire about a single package, or enter all if you would like to inquire about all packages at that time.')
         
